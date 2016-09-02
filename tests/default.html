@@ -1,0 +1,241 @@
+<!doctype html>
+<html>
+  <head>
+      <meta charset='UTF-8' />
+      <meta name="viewport" content="user-scalable=0, initial-scale=1.0">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta http-equiv='content-type' content='text/html; charset=utf-8' />
+
+      <title>Mantel 360 Viewer</title>
+      <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+      <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js" type="text/javascript"></script>
+      <script src='src/threesixty.js'></script>
+      <style>
+      html, body {
+        height: 100%;
+      }
+      input[type=range] {
+        -webkit-appearance: none;
+        margin: 18px 0;
+        width: 100%;
+      }
+      input[type=range]:focus {
+        outline: none;
+      }
+      input[type=range]::-webkit-slider-runnable-track {
+        width: 100%;
+        height: 8.4px;
+        cursor: pointer;
+        animate: 0.2s;
+        background: rgba(137, 150, 175, 0.15);
+      }
+      input[type=range]::-webkit-slider-thumb {
+        height: 25px;
+        width: 25px;
+        border-radius: 50%;
+        background: #006bcd;
+        cursor: pointer;
+        -webkit-appearance: none;
+        margin-top: -10px;
+      }
+      input[type=range]:focus::-webkit-slider-runnable-track {
+        background: rgba(137, 150, 175, 0.15);
+      }
+      input[type=range]::-moz-range-track {
+        width: 100%;
+        height: 8.4px;
+        cursor: pointer;
+        animate: 0.2s;
+        box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+        background: #3071a9;
+        border-radius: 1.3px;
+        border: 0.2px solid #010101;
+      }
+      input[type=range]::-moz-range-thumb {
+        box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+        border: 1px solid #000000;
+        height: 36px;
+        width: 16px;
+        border-radius: 3px;
+        background: #ffffff;
+        cursor: pointer;
+      }
+      input[type=range]::-ms-track {
+        width: 100%;
+        height: 8.4px;
+        cursor: pointer;
+        animate: 0.2s;
+        background: transparent;
+        border-color: transparent;
+        border-width: 16px 0;
+        color: transparent;
+      }
+      input[type=range]::-ms-fill-lower {
+        background: #2a6495;
+        border: 0.2px solid #010101;
+        border-radius: 2.6px;
+        box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+      }
+      input[type=range]::-ms-fill-upper {
+        background: #3071a9;
+        border: 0.2px solid #010101;
+        border-radius: 2.6px;
+        box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+      }
+      input[type=range]::-ms-thumb {
+        box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+        border: 1px solid #000000;
+        height: 36px;
+        width: 16px;
+        border-radius: 3px;
+        background: #ffffff;
+        cursor: pointer;
+      }
+      input[type=range]:focus::-ms-fill-lower {
+        background: #3071a9;
+      }
+      input[type=range]:focus::-ms-fill-upper {
+        background: #367ebd;
+      }
+      </style>
+      <style>
+        #container .threesixty {
+          position: relative;
+          overflow: hidden;
+          margin: 0 auto;
+        }
+        #container .threesixty .threesixty_images {
+          display: none;
+          list-style: none;
+          margin: 0;
+          padding: 0;
+        }
+        #container .threesixty .threesixty_images img {
+          position: absolute;
+          top: 0;
+          width: 100%;
+          height: auto;
+        }
+        #container .threesixty .threesixty_images img.previous-image {
+          visibility: hidden;
+          width: 0;
+        }
+        #container .threesixty .threesixty_images img.current-image {
+          visibility: visible;
+          width: 100%;
+        }
+        #container .threesixty .spinner {
+          width: 60px;
+          display: block;
+          margin: 0 auto;
+          height: 30px;
+          background: #333;
+          background: rgba(0, 0, 0, 0.7);
+          -webkit-border-radius: 5px;
+          -moz-border-radius: 5px;
+          border-radius: 5px;
+        }
+        #container .threesixty .spinner span {
+          font-family: Arial, "MS Trebuchet", sans-serif;
+          font-size: 12px;
+          font-weight: bolder;
+          color: #FFF;
+          text-align: center;
+          line-height: 30px;
+          display: block;
+        }
+        #container .threesixty .nav_bar {
+          position: absolute;
+          top: 10px;
+          right: 10px;
+          z-index: 11;
+        }
+        #container .threesixty .nav_bar a {
+          display: block;
+          width: 32px;
+          height: 32px;
+          float: left;
+          background: url(/demo/img/sprites.png) no-repeat;
+          text-indent: -99999px;
+        }
+        #container .threesixty .nav_bar a.nav_bar_play {
+          background-position: 0 0;
+        }
+        #container .threesixty .nav_bar a.nav_bar_previous {
+          background-position: 0 -73px;
+        }
+        #container .threesixty .nav_bar a.nav_bar_stop {
+          background-position: 0 -37px;
+        }
+        #container .threesixty .nav_bar a.nav_bar_next {
+          background-position: 0 -104px;
+        }
+        /* html */
+        #container:-webkit-full-screen {
+          background: #ffffff;
+          width: 100%;
+          height: 100%;
+          margin-top: 0;
+          padding-top: 200px;
+        }
+
+       /* Nodig voor Zoom functie*/
+        .threesixty_images {
+          transform-origin: 50% 50%;
+          width: 100%;
+          height: 100%;
+        }   
+      </style>
+      
+      <script>
+        window.onload = init;
+
+        var product;
+        function init(){
+
+            product1 = $('.product1').ThreeSixty({
+                totalFrames: 20, // Total no. of image you have for 360 slider
+                endFrame: 20, // end frame for the auto spin animation
+                currentFrame: 1, // This the start frame for auto spin
+                imgList: '.threesixty_images', // selector for image list
+                progress: '.spinner', // selector to show the loading progress
+                imagePath:'http://beta.mantel.com/360/assets/', // path of the image assets
+                filePrefix: 'giro-', // file prefix if any
+                ext: '.jpg', // extention for the assets
+                height: 1600,
+                width: 1080,
+                navigation: true,
+                disableSpin: true, // Default false
+                navigation: true,
+                responsive: true,
+                framerate: 20
+            });
+
+        }
+      </script>
+
+  </head>
+  <body>
+    <div class="container">
+    <div id='container'>
+      <div class="threesixty product1">
+          <div class="spinner">
+              <span>0%</span>
+          </div>
+          <ol class="threesixty_images"></ol>
+      </div>
+    </div>  
+      
+      <input id="slider" type ="range" min ="1" max="3" step ="0.1" value="1"/>
+      
+      <script>
+        // ZOOM FUNCTIE
+        $(document).ready(function(){
+          $('input').on('input change', function() {
+            var zoom = $( "input" ).val();
+            $(".threesixty_images").css("transform","scale(" +  (zoom)  + ")");
+          });
+        });  
+      </script>
+  </body>
+</html>
